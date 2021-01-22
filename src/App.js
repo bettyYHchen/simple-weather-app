@@ -27,10 +27,10 @@ function App() {
           </div>
           <div className="footer">
             <small>
-              <a href="https://github.com/bettyYHchen/weather-app">
-                Open-souce code
+              <a href="https://github.com/bettyYHchen/simple-weather-app">
+                Open-souce code 
               </a>
-              by Betty Chen
+               by Betty Chen
             </small>
           </div>
         </div>
