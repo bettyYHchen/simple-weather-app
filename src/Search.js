@@ -1,7 +1,7 @@
 import React from 'react';
 import './Search.css';
 
-export default function () {
+export default function Search() {
   return (
     <div className="SearchForm">
       <form>
