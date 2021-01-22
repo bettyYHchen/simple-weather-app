@@ -1,23 +1,40 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import City from './City';
+import Search from './Search';
+import WeatherDescription from './WeatherDescription';
+import WeatherMeasures from './WeatherMeasures';
+import WeatherForecast from './WeatherForecast';
 
 function App() {
-  return (
+   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="container">
+        <div className="weather-app-wrapper">
+          <div className="weather-app">
+            <div className="row">
+              <div className="col-8">
+                <Search />
+              </div>
+              <div className="col-4">
+                <City />
+              </div>
+            </div>
+
+            <WeatherDescription />
+            <WeatherMeasures />
+            <WeatherForecast />
+          </div>
+          <div className="footer">
+            <small>
+              <a href="https://github.com/bettyYHchen/weather-app">
+                Open-souce code
+              </a>
+              by Betty Chen
+            </small>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

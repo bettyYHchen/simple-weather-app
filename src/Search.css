@@ -1,0 +1,17 @@
+.SearchForm .btn-light {
+  background-color: #43658b;
+  color: white;
+}
+
+.SearchForm .btn-light:hover {
+  background-color: white;
+  color: #43658b;
+}
+
+.SearchForm .form-button {
+  padding-left: 5px;
+}
+
+.SearchForm .form-input {
+  padding-right: 5px;
+}
