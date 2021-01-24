@@ -1,18 +1,21 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function WeatherDescription() {
   return (
     <div className="WeatherDescription">
       <div className="row">
-        <div className="col-1"></div>
+        <div className="col-4">
+          <h3>Sun 15:00</h3>
+        </div>
         <div className="col-4">
           <h3>
-            <i className="fas fa-sun"></i> Sunny
+           <FontAwesomeIcon icon={['fas', 'sun']} /> Sunny
           </h3>
         </div>
         <div className="col-4">
           <h3>
-            <i className="fas fa-thermometer-three-quarters"></i> 7&deg; -
+            <FontAwesomeIcon icon={['fas', 'thermometer-three-quarters']} /> 7&deg; -
             18&deg;
           </h3>
         </div>

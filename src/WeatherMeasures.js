@@ -1,4 +1,5 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function WeatherMeasures() {
   return (
@@ -11,10 +12,10 @@ export default function WeatherMeasures() {
         <div className="col-6">
           <br />
           <h2>
-            <i className="fas fa-wind"></i> 4.8km/h
+            <FontAwesomeIcon icon={['fas', 'wind']} /> 4.8km/h
           </h2>
           <h2>
-            <i className="fas fa-tint"></i> 65%
+             <FontAwesomeIcon icon={ ['fas','tint']} /> 65%
           </h2>
         </div>
       </div>

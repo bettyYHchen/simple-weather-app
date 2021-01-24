@@ -11,7 +11,8 @@ export default function Search() {
               <input
                 type="search"
                 className="form-control shadow-sm"
-                placeholder="Enter the City or ZIP"
+                placeholder="Enter the City"
+                autoFocus="on"
               />
             </div>
             <div className="col-4 form-button">

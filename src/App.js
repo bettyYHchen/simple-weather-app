@@ -5,6 +5,12 @@ import Search from './Search';
 import WeatherDescription from './WeatherDescription';
 import WeatherMeasures from './WeatherMeasures';
 import WeatherForecast from './WeatherForecast';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+library.add(fas);
+
 
 function App() {
    return (
@@ -20,7 +26,6 @@ function App() {
                 <City />
               </div>
             </div>
-
             <WeatherDescription />
             <WeatherMeasures />
             <WeatherForecast />
@@ -28,7 +33,7 @@ function App() {
           <div className="footer">
             <small>
               <a href="https://github.com/bettyYHchen/simple-weather-app">
-                Open-souce code 
+                 Open-souce code{" "}
               </a>
                by Betty Chen
             </small>
