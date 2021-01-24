@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import City from './City';
-import Search from './Search';
 import WeatherDescription from './WeatherDescription';
 import WeatherMeasures from './WeatherMeasures';
 import WeatherForecast from './WeatherForecast';
@@ -20,7 +19,25 @@ function App() {
           <div className="weather-app">
             <div className="row">
               <div className="col-8">
-                <Search />
+                <div className="SearchForm">
+                  <form>
+                    <div className="form-group">
+                      <div className="row">
+                        <div className="col-8 form-input">
+                          <input
+                            type="search"
+                            className="form-control shadow-sm"
+                            placeholder="Enter the City"
+                            autoFocus="on"
+                          />
+                        </div>
+                        <div className="col-4 form-button">
+                          <input type="submit" className="btn btn-light" value="search" />
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
               </div>
               <div className="col-4">
                 <City />

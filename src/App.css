@@ -41,3 +41,21 @@ h5 {
 .weather-app-wrapper .footer {
   text-align: left;
 }
+
+.SearchForm .btn-light {
+  background-color: #43658b;
+  color: white;
+}
+
+.SearchForm .btn-light:hover {
+  background-color: white;
+  color: #43658b;
+}
+
+.SearchForm .form-button {
+  padding-left: 5px;
+}
+
+.SearchForm .form-input {
+  padding-right: 5px;
+}
