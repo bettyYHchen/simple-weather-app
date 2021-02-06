@@ -1,5 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import CustomIcon from './CustomIcon';
 
 export default function WeatherDescription(props) {
   return (
@@ -10,7 +11,7 @@ export default function WeatherDescription(props) {
         </div>
         <div className="col-4">
           <h3>
-            <FontAwesomeIcon icon={['fas', 'sun']} /> {props.weatherDesc}
+            <CustomIcon icon={props.weatherDesc}/> {props.weatherDesc}
           </h3>
         </div>
         <div className="col-4">
