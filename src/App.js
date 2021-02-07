@@ -14,7 +14,8 @@ library.add(fas);
 
 function App() {
   const [city, setCity] = useState("Toronto");
-  let apiKey = "73eee4c0adad9e9175d692ed1fe44b49";
+  const [counter, setCounter] = useState(0);
+  let apiKey = "b080b8905111b5961bd5728fb12cf00d";
   let units = "metric";
   let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`;
   const [weatherData, setWeatherData] = useState({
@@ -24,34 +25,29 @@ function App() {
     tempLower: 7,
     tempUpper: 18,
     weatherDesc: 'Sunny',
-    lat: 43.653225,
-    lon: -79.383186,
     timeOffset: -18000, //the city's UTC Shift in seconds from UTC
     ready: false
   });
+  const [location, setLocation] = useState({
+    lat: 43.6534817,
+    lng: -79.3839347,
+    timeOffset: -18000
+  })
   const [weatherForecastData, setWeatherForecastData] = useState({
-    weatherDescArray: ['Sunny', 'Sunny', 'Sunny', 'Sunny', 'Sunny'],
+    weatherDescArray: ['Clear', 'Clear', 'Clear', 'Clear', 'Clear'],
     celciusMinRecords: [9, 12, 4, 2, 1],
     celciusMaxRecords: [18, 19, 18, 9, 10]
   });
   function updateResults() { 
-    axios.get(apiUrl).then(function (response) {
-    setWeatherData({
-      temperature: Math.round(response.data.main.temp),
-      wind: response.data.wind.speed,
-      humidity: response.data.main.humidity,
-      tempLower: Math.round(response.data.main.temp_min),
-      tempUpper: Math.round(response.data.main.temp_max),
-      weatherDesc: response.data.weather[0].main,
-      lat: response.data.coord.lat,
-      lon: response.data.coord.lon,
-      timeOffset: response.data.timezone, //the city's UTC Shift in seconds from UTC
-      ready: true
-    })
-      console.log("lat: " + weatherData.lat);
-      console.log("lon: " + weatherData.lon);
-    });
-    let apiForeCastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${weatherData.lat}&lon=${weatherData.lon}&units=${units}&exclude=current,minutely,hourly,alerts&appid=${apiKey}`;
+    let apiLocationUrl = `https://api.opencagedata.com/geocode/v1/json?q=${city}&key=c283b937343445819c70964fa093c1cb`;
+      axios.get(apiLocationUrl).then(function (response) {
+      setLocation({
+        lat: response.data.results[0].geometry.lat,
+        lng: response.data.results[0].geometry.lng,
+        timeOffset: response.data.results[0].annotations.timezone.offset_sec
+      });
+      })
+    let apiForeCastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${location.lat}&lon=${location.lng}&units=${units}&exclude=current,minutely,hourly,alerts&appid=${apiKey}`;
     axios.get(apiForeCastUrl).then(function (response) {
       var dummyWeatherDescArray = [];
       var dummyCelciusMinRecords = [];
@@ -66,8 +62,23 @@ function App() {
         weatherDescArray: dummyWeatherDescArray,
         celciusMinRecords: dummyCelciusMinRecords,
         celciusMaxRecords: dummycelciusMaxRecords
-      })
       });
+      setCounter(counter + 1);
+    });
+    axios.get(apiUrl).then(function (response) {
+      setWeatherData({
+        temperature: Math.round(response.data.main.temp),
+        wind: response.data.wind.speed,
+        humidity: response.data.main.humidity,
+        tempLower: Math.round(response.data.main.temp_min),
+        tempUpper: Math.round(response.data.main.temp_max),
+        weatherDesc: response.data.weather[0].main,
+        timeOffset: response.data.timezone, //the city's UTC Shift in seconds from UTC
+        ready: true
+      });
+    });
+    
+    console.log(counter);
   }
  
   function handleUpdate(event) {
@@ -125,11 +136,11 @@ function App() {
             </div>
           </div>
         </div>
-      </div>
+         </div>
     );
   } else { 
     updateResults();
-    return (<h2>Loading...</h2>)
+    return (<h2>Loading...</h2>);
   }
 
 
