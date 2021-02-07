@@ -13,7 +13,7 @@ library.add(fas);
 
 
 function App() {
-  let city = "Toronto";
+  const [city, setCity] = useState("Toronto");
   let apiKey = "73eee4c0adad9e9175d692ed1fe44b49";
   let units = "metric";
   let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`;
@@ -26,6 +26,7 @@ function App() {
     weatherDesc: 'Sunny',
     lat: 43.653225,
     lon: -79.383186,
+    timeOffset: -18000, //the city's UTC Shift in seconds from UTC
     ready: false
   });
   const [weatherForecastData, setWeatherForecastData] = useState({
@@ -33,55 +34,7 @@ function App() {
     celciusMinRecords: [9, 12, 4, 2, 1],
     celciusMaxRecords: [18, 19, 18, 9, 10]
   });
-  if (weatherData.ready) {
-    return (
-      <div className="App">
-        <div className="container">
-          <div className="weather-app-wrapper">
-            <div className="weather-app">
-              <div className="row">
-                <div className="col-8">
-                  <div className="SearchForm">
-                    <form>
-                      <div className="form-group">
-                        <div className="row">
-                          <div className="col-8 form-input">
-                            <input
-                              type="search"
-                              className="form-control shadow-sm"
-                              placeholder="Enter the City"
-                              autoFocus="on"
-                            />
-                          </div>
-                          <div className="col-4 form-button">
-                            <input type="submit" className="btn btn-light" value="search" />
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-                <div className="col-4">
-                  <City />
-                </div>
-              </div>
-              <WeatherDescription weatherDesc={weatherData.weatherDesc} tempLower={weatherData.tempLower} tempUpper={ weatherData.tempUpper}/>
-              <WeatherMeasures temperature={weatherData.temperature} wind={weatherData.wind} humidity={ weatherData.humidity}/>
-              <WeatherForecast weatherDescArray={weatherForecastData.weatherDescArray} celciusMinRecords={weatherForecastData.celciusMinRecords} celciusMaxRecords={ weatherForecastData.celciusMaxRecords}/>
-            </div>
-            <div className="footer">
-              <small>
-                <a href="https://github.com/bettyYHchen/simple-weather-app">
-                  Open-souce code{" "}
-                </a>
-               by Betty Chen
-            </small>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  } else { 
+  function updateResults() { 
     axios.get(apiUrl).then(function (response) {
     setWeatherData({
       temperature: Math.round(response.data.main.temp),
@@ -92,8 +45,11 @@ function App() {
       weatherDesc: response.data.weather[0].main,
       lat: response.data.coord.lat,
       lon: response.data.coord.lon,
+      timeOffset: response.data.timezone, //the city's UTC Shift in seconds from UTC
       ready: true
     })
+      console.log("lat: " + weatherData.lat);
+      console.log("lon: " + weatherData.lon);
     });
     let apiForeCastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${weatherData.lat}&lon=${weatherData.lon}&units=${units}&exclude=current,minutely,hourly,alerts&appid=${apiKey}`;
     axios.get(apiForeCastUrl).then(function (response) {
@@ -112,6 +68,67 @@ function App() {
         celciusMaxRecords: dummycelciusMaxRecords
       })
       });
+  }
+ 
+  function handleUpdate(event) {
+    event.preventDefault();
+    setCity(event.target.value);
+  }
+  function handlleSubmit(event) {
+    event.preventDefault();
+    updateResults();
+  }
+  if (weatherData.ready) {
+    return (
+      <div className="App">
+        <div className="container">
+          <div className="weather-app-wrapper">
+            <div className="weather-app">
+              <div className="row">
+                <div className="col-8">
+                  <div className="SearchForm">
+                    <form onSubmit={handlleSubmit}>
+                      <div className="form-group">
+                        <div className="row">
+                          <div className="col-8 form-input">
+                            <input
+                              type="search"
+                              className="form-control shadow-sm"
+                              placeholder="Enter the City"
+                              onChange={handleUpdate}
+                              autoFocus="on"
+                            />
+                          </div>
+                          <div className="col-4 form-button">
+                            <input type="submit" className="btn btn-light" value="search" />
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <City city={city}/>
+                </div>
+              </div>
+              <WeatherDescription timeOffset={weatherData.timeOffset} weatherDesc={weatherData.weatherDesc} tempLower={weatherData.tempLower} tempUpper={ weatherData.tempUpper}/>
+              <WeatherMeasures temperature={weatherData.temperature} wind={weatherData.wind} humidity={ weatherData.humidity}/>
+              <WeatherForecast timeOffset={weatherData.timeOffset} weatherDescArray={weatherForecastData.weatherDescArray} celciusMinRecords={weatherForecastData.celciusMinRecords} celciusMaxRecords={ weatherForecastData.celciusMaxRecords}/>
+            </div>
+            <div className="footer">
+              <small>
+                <a href="https://github.com/bettyYHchen/simple-weather-app">
+                  Open-souce code{" "}
+                </a>
+               by Betty Chen
+            </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  } else { 
+    updateResults();
     return (<h2>Loading...</h2>)
   }
 
