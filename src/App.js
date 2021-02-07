@@ -7,6 +7,7 @@ import WeatherForecast from './WeatherForecast';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import Loader from "react-loader-spinner";
 
 
 library.add(fas);
@@ -140,7 +141,13 @@ function App() {
     );
   } else { 
     updateResults();
-    return (<h2>Loading...</h2>);
+    return ( <Loader
+        type="Puff"
+        color="#4e89ae"
+        height={100}
+        width={100}
+        timeout={3000} //3 secs
+      />);
   }
 
 
