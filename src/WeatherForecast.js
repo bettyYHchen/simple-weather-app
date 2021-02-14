@@ -5,6 +5,7 @@ export default function WeatherForecast(props) {
   let weatherDescArray = props.weatherDescArray;
   let celciusMinRecords = props.celciusMinRecords;
   let celciusMaxRecords = props.celciusMaxRecords;
+  
   let forecastDays = [];
   function changeTime(offset) {
     // function to calculate local time
@@ -27,7 +28,7 @@ export default function WeatherForecast(props) {
   //Change the day display in the forecast according to current day
   let daysAbbrev = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var i;
-  for (i = 1; i < 6; i++) {
+  for (i = 0; i < 5; i++) {
     forecastDays.push(daysAbbrev[(now.getDay() + i) % 7]);
    }
   return (

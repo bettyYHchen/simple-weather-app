@@ -2,13 +2,14 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function WeatherMeasures(props) {
+    let temperature = props.temperature;
     
     return (
         <div className="WeatherMeasures">
         <div className="row">
             <div className="col-1"></div>
             <div className="col-5">
-                    <div className="large">{props.temperature}&deg;</div>
+                    <div className="large"><span></span>{temperature}&deg;</div>
             </div>
             <div className="col-6">
             <br />

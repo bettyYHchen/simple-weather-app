@@ -29,7 +29,7 @@ h6 {
 }
 
 .weather-app-wrapper {
-  max-width: 600px;
+  max-width: 700px;
   margin: 20px auto;
 }
 
@@ -59,4 +59,19 @@ h6 {
 
 .SearchForm .form-input {
   padding-right: 5px;
+}
+
+.unit {
+  font-size: 30px;
+  font-weight: bolder;
+  position: relative;
+}
+
+.unit .active {
+  color: #898b8a;
+  cursor: default;
+}
+
+.unit .active:hover {
+  text-decoration: none;
 }

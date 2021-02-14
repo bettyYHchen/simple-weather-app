@@ -1,9 +1,10 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CustomIcon from './CustomIcon';
+import AnimatedWeatherIcon from './AnimatedWeatherIcon';
 import './WeatherDescription.css';
 
 export default function WeatherDescription(props) {
+
     function formatMinutes(d) {
       if (d < 10) {
           return "0" + d;
@@ -31,21 +32,26 @@ export default function WeatherDescription(props) {
   }
   let days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
   let now = changeTime(props.timeOffset);
+  let tempLower = props.tempLower;
+  let tempUpper = props.tempUpper;
   return (
     <div className="WeatherDescription">
       <div className="row">
         <div className="col-4">
           <h4>{days[now.getDay()]} {now.getHours()}:{formatMinutes(now.getMinutes())}</h4>
         </div>
-        <div className="col-4">
+        <div className="col-2">
+              <AnimatedWeatherIcon iconSize={70} icon={props.weatherDesc}/>
+        </div>
+        <div className="col-2">
           <h4>
-            <CustomIcon icon={props.weatherDesc}/> {props.weatherDesc}
+             {props.weatherDesc}
           </h4>
         </div>
         <div className="col-4">
           <h4>
-            <FontAwesomeIcon icon={['fas', 'thermometer-three-quarters']} /> {props.tempLower}&deg;~
-            {props.tempUpper}&deg;
+            <FontAwesomeIcon icon={['fas', 'thermometer-three-quarters']} /> {tempLower}&deg;~
+            {tempUpper}&deg;
           </h4>
         </div>
       </div>

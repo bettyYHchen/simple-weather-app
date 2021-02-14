@@ -15,8 +15,7 @@ library.add(fas);
 
 function App() {
   const [city, setCity] = useState("Toronto");
-  const [counter, setCounter] = useState(0);
-  let apiKey = "b080b8905111b5961bd5728fb12cf00d";
+  let apiKey = "73eee4c0adad9e9175d692ed1fe44b49";
   let units = "metric";
   let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`;
   const [weatherData, setWeatherData] = useState({
@@ -26,30 +25,54 @@ function App() {
     tempLower: 7,
     tempUpper: 18,
     weatherDesc: 'Sunny',
+    lat: 43.6534817,
+    lng: -79.3839347,
     timeOffset: -18000, //the city's UTC Shift in seconds from UTC
     ready: false
   });
-  const [location, setLocation] = useState({
-    lat: 43.6534817,
-    lng: -79.3839347,
-    timeOffset: -18000
-  })
+  const [celsiusRecords, setCelsiusRecords] = useState({
+    temperature: 17,
+    tempLower: 7,
+    tempUpper: 18
+  });
+ 
   const [weatherForecastData, setWeatherForecastData] = useState({
     weatherDescArray: ['Clear', 'Clear', 'Clear', 'Clear', 'Clear'],
     celciusMinRecords: [9, 12, 4, 2, 1],
     celciusMaxRecords: [18, 19, 18, 9, 10]
   });
-  function updateResults() { 
-    let apiLocationUrl = `https://api.opencagedata.com/geocode/v1/json?q=${city}&key=c283b937343445819c70964fa093c1cb`;
-      axios.get(apiLocationUrl).then(function (response) {
-      setLocation({
-        lat: response.data.results[0].geometry.lat,
-        lng: response.data.results[0].geometry.lng,
-        timeOffset: response.data.results[0].annotations.timezone.offset_sec
-      });
-      })
-    let apiForeCastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${location.lat}&lon=${location.lng}&units=${units}&exclude=current,minutely,hourly,alerts&appid=${apiKey}`;
-    axios.get(apiForeCastUrl).then(function (response) {
+
+  const [celsiusForecastRecords, setCelsiusForecastRecords] = useState({
+    celciusMinRecords: [9, 12, 4, 2, 1],
+    celciusMaxRecords: [18, 19, 18, 9, 10]
+  });
+
+  function convert2Fahrenheit(degree) {
+    return Math.round(((degree * 9) / 5) + 32);
+  }
+
+  function handleWeatherResponse(response) { 
+     setWeatherData({
+        temperature: Math.round(response.data.main.temp),
+        wind: response.data.wind.speed,
+        humidity: response.data.main.humidity,
+        tempLower: Math.round(response.data.main.temp_min),
+        tempUpper: Math.round(response.data.main.temp_max),
+        weatherDesc: response.data.weather[0].main,
+        lat: response.data.coord.lat,
+        lng: response.data.coord.lon,
+        timeOffset: response.data.timezone, //the city's UTC Shift in seconds from UTC
+        ready: true
+     });
+    setCelsiusRecords({
+      temperature: Math.round(response.data.main.temp),
+      tempLower: Math.round(response.data.main.temp_min),
+      tempUpper: Math.round(response.data.main.temp_max)
+    });
+    
+  }
+
+  function handleForecastResponse(response) { 
       var dummyWeatherDescArray = [];
       var dummyCelciusMinRecords = [];
       var dummycelciusMaxRecords = [];
@@ -64,22 +87,11 @@ function App() {
         celciusMinRecords: dummyCelciusMinRecords,
         celciusMaxRecords: dummycelciusMaxRecords
       });
-      setCounter(counter + 1);
-    });
-    axios.get(apiUrl).then(function (response) {
-      setWeatherData({
-        temperature: Math.round(response.data.main.temp),
-        wind: response.data.wind.speed,
-        humidity: response.data.main.humidity,
-        tempLower: Math.round(response.data.main.temp_min),
-        tempUpper: Math.round(response.data.main.temp_max),
-        weatherDesc: response.data.weather[0].main,
-        timeOffset: response.data.timezone, //the city's UTC Shift in seconds from UTC
-        ready: true
+    setCelsiusForecastRecords({
+      celciusMinRecords: dummyCelciusMinRecords,
+      celciusMaxRecords: dummycelciusMaxRecords
       });
-    });
     
-    console.log(counter);
   }
  
   function handleUpdate(event) {
@@ -88,8 +100,62 @@ function App() {
   }
   function handlleSubmit(event) {
     event.preventDefault();
-    updateResults();
+    axios.get(apiUrl).then(handleWeatherResponse);
+    let apiForeCastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${weatherData.lat}&lon=${weatherData.lng}&units=${units}&exclude=current,minutely,hourly,alerts&appid=${apiKey}`;
+    axios.get(apiForeCastUrl).then(handleForecastResponse);
   }
+
+  function selectUnit(event) {
+    var dummyCelciusMinRecords = [];
+    var dummycelciusMaxRecords = [];
+    event.preventDefault();
+    if (event.target.value === "fahrenheit") {
+      setWeatherData({
+        temperature: convert2Fahrenheit(celsiusRecords.temperature),
+        wind: weatherData.wind,
+        humidity: weatherData.humidity,
+        tempLower: convert2Fahrenheit(celsiusRecords.tempLower),
+        tempUpper: convert2Fahrenheit(celsiusRecords.tempUpper),
+        weatherDesc: weatherData.weatherDesc,
+        lat: weatherData.lat,
+        lng: weatherData.lng,
+        timeOffset: weatherData.timeOffset,
+        ready: weatherData.ready
+      });
+      for (var j = 0; j <= celsiusForecastRecords.celciusMinRecords.length; j++) {
+        dummyCelciusMinRecords.push(convert2Fahrenheit(celsiusForecastRecords.celciusMinRecords[j]));
+        dummycelciusMaxRecords.push(convert2Fahrenheit(celsiusForecastRecords.celciusMaxRecords[j]));
+      }
+
+      setWeatherForecastData({
+        weatherDescArray: weatherForecastData.weatherDescArray,
+        celciusMinRecords: dummyCelciusMinRecords,
+        celciusMaxRecords: dummycelciusMaxRecords
+      })
+
+    } else {
+       setWeatherData({
+         temperature: celsiusRecords.temperature,
+         wind: weatherData.wind,
+         humidity: weatherData.humidity,
+         tempLower: celsiusRecords.tempLower,
+         tempUpper: celsiusRecords.tempUpper,
+         weatherDesc: weatherData.weatherDesc,
+         lat: weatherData.lat,
+         lng: weatherData.lng,
+         timeOffset: weatherData.timeOffset,
+         ready: weatherData.ready
+       });
+      setWeatherForecastData({
+        weatherDescArray: weatherForecastData.weatherDescArray,
+        celciusMinRecords: celsiusForecastRecords.celciusMinRecords,
+        celciusMaxRecords: celsiusForecastRecords.celciusMaxRecords
+      })
+    }
+    
+  }
+
+ 
   if (weatherData.ready) {
     return (
       <div className="App">
@@ -97,7 +163,7 @@ function App() {
           <div className="weather-app-wrapper">
             <div className="weather-app">
               <div className="row">
-                <div className="col-8">
+                <div className="col-6">
                   <div className="SearchForm">
                     <form onSubmit={handlleSubmit}>
                       <div className="form-group">
@@ -108,7 +174,6 @@ function App() {
                               className="form-control shadow-sm"
                               placeholder="Enter the City"
                               onChange={handleUpdate}
-                              autoFocus="on"
                             />
                           </div>
                           <div className="col-4 form-button">
@@ -119,13 +184,19 @@ function App() {
                     </form>
                   </div>
                 </div>
-                <div className="col-4">
+                <div className="col-3">
+                  <select className="form-select" aria-label="Select unit" defaultValue="celsius" onChange={selectUnit}>
+                      <option value="celsius">celsius</option>
+                      <option value="fahrenheit">fahrenheit</option>
+                  </select>
+                </div>
+                <div className="col-3">
                   <City city={city}/>
                 </div>
               </div>
-              <WeatherDescription timeOffset={weatherData.timeOffset} weatherDesc={weatherData.weatherDesc} tempLower={weatherData.tempLower} tempUpper={ weatherData.tempUpper}/>
-              <WeatherMeasures temperature={weatherData.temperature} wind={weatherData.wind} humidity={ weatherData.humidity}/>
-              <WeatherForecast timeOffset={weatherData.timeOffset} weatherDescArray={weatherForecastData.weatherDescArray} celciusMinRecords={weatherForecastData.celciusMinRecords} celciusMaxRecords={ weatherForecastData.celciusMaxRecords}/>
+              <WeatherDescription timeOffset={weatherData.timeOffset} weatherDesc={weatherData.weatherDesc} tempLower={weatherData.tempLower} tempUpper={weatherData.tempUpper} />
+              <WeatherMeasures temperature={weatherData.temperature} wind={weatherData.wind} humidity={weatherData.humidity} />
+              <WeatherForecast timeOffset={weatherData.timeOffset} weatherDescArray={weatherForecastData.weatherDescArray} celciusMinRecords={weatherForecastData.celciusMinRecords} celciusMaxRecords={weatherForecastData.celciusMaxRecords} />
             </div>
             <div className="footer">
               <small>
@@ -140,7 +211,9 @@ function App() {
          </div>
     );
   } else { 
-    updateResults();
+    axios.get(apiUrl).then(handleWeatherResponse);
+    let apiForeCastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${weatherData.lat}&lon=${weatherData.lng}&units=${units}&exclude=current,minutely,hourly,alerts&appid=${apiKey}`;
+    axios.get(apiForeCastUrl).then(handleForecastResponse);
     return ( <Loader
         type="Puff"
         color="#4e89ae"
